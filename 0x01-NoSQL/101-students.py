@@ -3,11 +3,8 @@
 Script to return all students sorted by average score from a MongoDB collection.
 """
 
-from pymongo.collection import Collection
-from typing import List, Dict
 
-
-def top_students(mongo_collection: Collection) -> List[Dict]:
+def top_students(mongo_collection):
     """
     Return a list of students sorted by their average score.
 
@@ -20,14 +17,22 @@ def top_students(mongo_collection: Collection) -> List[Dict]:
     Example:
         top_students = top_students(students_collection)
     """
-    return list(mongo_collection.aggregate([
-        {
-            "$project": {
-                "name": 1,
-                "averageScore": {"$avg": "$topics.score"}
-            }
-        },
-        {
-            "$sort": {"averageScore": -1}
-        }
-    ]))
+    return mongo_collection.aggregate(
+            [
+                {
+                    '$project': {
+                        '_id': 1,
+                        'name': 1,
+                        'averageScore': {
+                            '$avg': {
+                                '$avg': '$topics.score',
+                            },
+                        },
+                        'topics': 1,
+                    },
+                },
+                {
+                    '$sort': {'averageScore': -1},
+                },
+            ]
+        )
