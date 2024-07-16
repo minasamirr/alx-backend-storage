@@ -1,2 +1,12 @@
-# Script to list all documents with names starting with "Holberton" in the "school" collection.
-db.school.find({name: /Holberton.*/}).forEach(printjson);
+// 100-find
+// This script lists all documents in the school collection
+// where the name starts with "Holberton".
+
+// Get the database name from the command line arguments
+const dbName = process.argv[2];
+
+// Connect to the database
+const db = connect(`mongodb://127.0.0.1:27017/${dbName}`);
+
+// Find and print documents where the name starts with "Holberton"
+db.school.find({ name: /^Holberton/ }).forEach(printjson);
