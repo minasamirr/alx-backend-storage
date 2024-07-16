@@ -14,21 +14,21 @@ def log_stats() -> None:
     logs for each HTTP method (GET, POST, PUT, PATCH, DELETE). It also prints the
     number of logs where the method is GET and the path is '/status'.
     """
-    client = MongoClient('mongodb://localhost:27017/')
-    db = client.logs
-    collection = db.nginx
+    client = MongoClient('mongodb://127.0.0.1:27017')
+    collection = client.logs.nginx
 
-    log_count = collection.count_documents({})
-    print(f"{log_count} logs")
+    print('{} logs'.format(collection.count_documents({})))
 
     methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
     print("Methods:")
     for method in methods:
-        count = collection.count_documents({"method": method})
-        print(f"\tmethod {method}: {count}")
+        count = len(list(collection.find({'method': method})))
+        print('\tmethod {}: {}'.format(method, count))
 
-    status_check_count = collection.count_documents({"method": "GET", "path": "/status"})
-    print(f"{status_check_count} status check")
+    status_check_count = len(list(
+        collection.find({'method': 'GET', 'path': '/status'})
+    ))
+    print('{} status check'.format(status_check_count))
 
 
 if __name__ == "__main__":
