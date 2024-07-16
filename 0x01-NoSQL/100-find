@@ -1,2 +1,2 @@
 # Script to list all documents with names starting with "Holberton" in the "school" collection.
-db.school.find({ "name": { "$regex": "^Holberton" } })
+db.school.find({ name: /^Holberton/ }).forEach(printjson);
