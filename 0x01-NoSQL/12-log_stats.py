@@ -5,7 +5,7 @@ Script to provide statistics about Nginx logs stored in a MongoDB collection.
 from pymongo import MongoClient
 
 
-def log_stats() -> None:
+def log_stats():
     """
     Print statistics about Nginx logs stored in the MongoDB collection.
 
