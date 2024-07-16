@@ -1,4 +1,2 @@
-#!/usr/bin/env bash
 # Script to list all documents with names starting with "Holberton" in the "school" collection.
-
-mongo "$1" --eval 'db.school.find({"name": /^Holberton/}).forEach(printjson)'
+db.school.find({ "name": { "$regex": "^Holberton" } })
