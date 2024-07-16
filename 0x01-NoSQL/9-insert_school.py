@@ -2,10 +2,9 @@
 """
 Script to insert a new document in a collection based on kwargs.
 """
-from pymongo.collection import Collection
-from typing import Dict, Any
 
-def insert_school(mongo_collection: Collection, **kwargs: Dict[str, Any]) -> Any:
+
+def insert_school(mongo_collection, **kwargs):
     """
     Insert a new document in a collection based on kwargs.
 
