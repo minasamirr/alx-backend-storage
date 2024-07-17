@@ -7,6 +7,7 @@ import uuid
 from typing import Union, Callable, Optional
 from functools import wraps
 
+
 def count_calls(method: Callable) -> Callable:
     """
     Decorator to count the number of calls to a method.
@@ -19,6 +20,7 @@ def count_calls(method: Callable) -> Callable:
         self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
     return wrapper
+
 
 def call_history(method: Callable) -> Callable:
     """
@@ -36,6 +38,24 @@ def call_history(method: Callable) -> Callable:
         self._redis.rpush(output_key, str(output))
         return output
     return wrapper
+
+
+def replay(method: Callable) -> None:
+    """
+    Display the history of calls of a particular function.
+
+    Args:
+        method (Callable): The method to display call history for.
+    """
+    cache = method.__self__
+    input_key = f"{method.__qualname__}:inputs"
+    output_key = f"{method.__qualname__}:outputs"
+    inputs = cache._redis.lrange(input_key, 0, -1)
+    outputs = cache._redis.lrange(output_key, 0, -1)
+    print(f"{method.__qualname__} was called {len(inputs)} times:")
+    for inp, out in zip(inputs, outputs):
+        print(f"{method.__qualname__}(*{inp.decode('utf-8')}) -> {out.decode('utf-8')}")
+
 
 class Cache:
     """
@@ -107,3 +127,12 @@ class Cache:
             Optional[int]: Retrieved data as an integer.
         """
         return self.get(key, fn=int)
+
+
+if __name__ == "__main__":
+    cache = Cache()
+
+    cache.store("foo")
+    cache.store("bar")
+    cache.store(42)
+    replay(cache.store)
